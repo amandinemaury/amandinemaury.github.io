@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Projets — Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #f5f0e8;
+      --fg: #1a2744;
+      --fg-muted: #5a6a8a;
+      --accent: #ffa62b;
+      --accent-dim: rgba(255,166,43,0.12);
+      --border: rgba(26,39,68,0.10);
+      --serif: 'Cormorant Garamond', Georgia, serif;
+      --mono: 'DM Mono', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--serif);
+      font-weight: 300;
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 100;
+      opacity: 0.15;
+    }
+
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.5rem 4rem;
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+      background: rgba(245,240,232,0.88);
+    }
+
+    .nav-logo {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      color: var(--fg-muted);
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover { color: var(--fg); }
+    .nav-links a.active { color: var(--accent); }
+
+    /* Page header */
+    .page-header {
+      padding: 10rem 4rem 4rem;
+      border-bottom: 1px solid var(--border);
+      animation: fadeUp 0.8s ease both;
+    }
+
+    .page-eyebrow {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .page-eyebrow::before {
+      content: '';
+      width: 32px;
+      height: 1px;
+      background: var(--accent);
+    }
+
+    h1 {
+      font-size: clamp(3rem, 5vw, 5rem);
+      font-weight: 300;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      max-width: 700px;
+    }
+
+    h1 em { font-style: italic; color: var(--accent); }
+
+    /* Filter tabs */
+    .filters {
+      display: flex;
+      gap: 0;
+      padding: 0 4rem;
+      border-bottom: 1px solid var(--border);
+      animation: fadeUp 0.8s 0.1s ease both;
+    }
+
+    .filter-btn {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--fg-muted);
+      background: none;
+      border: none;
+      padding: 1.2rem 1.5rem;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: color 0.3s, border-color 0.3s;
+    }
+
+    .filter-btn:hover { color: var(--fg); }
+    .filter-btn.active { color: var(--accent); border-color: var(--accent); }
+
+    /* Projects list */
+    .projects {
+      padding: 0 4rem;
+      animation: fadeUp 0.8s 0.2s ease both;
+    }
+
+    .project-row {
+      display: grid;
+      grid-template-columns: 80px 1fr auto;
+      align-items: start;
+      gap: 2rem;
+      padding: 3rem 0;
+      border-bottom: 1px solid var(--border);
+      text-decoration: none;
+      color: inherit;
+      transition: background 0.3s;
+      position: relative;
+    }
+
+    .project-row:hover { background: var(--accent-dim); margin: 0 -4rem; padding-left: 4rem; padding-right: 4rem; }
+    .project-row:hover .project-arrow { opacity: 1; transform: translate(0,0); }
+
+    .project-num {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--fg-muted);
+      letter-spacing: 0.1em;
+      padding-top: 0.3rem;
+    }
+
+    .project-content {}
+
+    .project-title {
+      font-size: 1.8rem;
+      font-weight: 300;
+      margin-bottom: 0.5rem;
+      line-height: 1.2;
+    }
+
+    .project-desc {
+      color: var(--fg-muted);
+      font-size: 1rem;
+      max-width: 560px;
+      line-height: 1.7;
+      margin-bottom: 1rem;
+    }
+
+    .project-tags {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .project-tag {
+      font-family: var(--mono);
+      font-size: 0.63rem;
+      letter-spacing: 0.08em;
+      border: 1px solid var(--border);
+      padding: 0.2rem 0.6rem;
+      color: var(--fg-muted);
+    }
+
+    .project-tag.featured { border-color: var(--accent); color: var(--accent); }
+
+    .project-arrow {
+      font-size: 1.4rem;
+      color: var(--accent);
+      opacity: 0;
+      transform: translate(-8px, 8px);
+      transition: opacity 0.3s, transform 0.3s;
+      padding-top: 0.3rem;
+    }
+
+    /* Featured project — large card */
+    .project-featured {
+      margin: 3rem 0;
+      border: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 360px;
+    }
+
+    .featured-visual {
+      background: var(--accent-dim);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-right: 1px solid var(--border);
+      padding: 3rem;
+    }
+
+    .featured-mockup {
+      width: 100%;
+      max-width: 260px;
+      aspect-ratio: 16/10;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .mockup-bar {
+      height: 22px;
+      background: rgba(26,39,68,0.04);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 0 8px;
+    }
+
+    .mockup-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border); }
+
+    .mockup-content {
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .mockup-line {
+      height: 6px;
+      border-radius: 2px;
+      background: rgba(26,39,68,0.08);
+    }
+
+    .mockup-line.accent { background: rgba(255,166,43,0.4); width: 60%; }
+    .mockup-line.short { width: 40%; }
+
+    .featured-info {
+      padding: 3rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .featured-badge {
+      font-family: var(--mono);
+      font-size: 0.63rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 0.2rem 0.6rem;
+      display: inline-block;
+      margin-bottom: 1.5rem;
+      align-self: flex-start;
+    }
+
+    .featured-title {
+      font-size: 2.2rem;
+      font-weight: 300;
+      line-height: 1.15;
+      margin-bottom: 1rem;
+    }
+
+    .featured-desc {
+      color: var(--fg-muted);
+      line-height: 1.8;
+      flex: 1;
+    }
+
+    .featured-footer {
+      margin-top: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .featured-stack {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .featured-stack span {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      color: var(--accent);
+    }
+
+    .featured-link {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--fg);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .featured-link:hover { color: var(--accent); }
+
+    /* Contact CTA */
+    .cta-band {
+      margin: 4rem;
+      border: 1px solid var(--border);
+      padding: 3rem 4rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      animation: fadeUp 0.8s 0.4s ease both;
+    }
+
+    .cta-text h2 {
+      font-size: 2rem;
+      font-weight: 300;
+    }
+
+    .cta-text h2 em { font-style: italic; color: var(--accent); }
+
+    .cta-text p {
+      color: var(--fg-muted);
+      margin-top: 0.5rem;
+    }
+
+    .btn-primary {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--bg);
+      background: var(--accent);
+      border: none;
+      padding: 0.9rem 2rem;
+      text-decoration: none;
+      transition: opacity 0.3s;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .btn-primary:hover { opacity: 0.85; }
+
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 4rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-copy {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      color: var(--fg-muted);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .footer-links a {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      color: var(--fg-muted);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .footer-links a:hover { color: var(--accent); }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="nav-logo">// Portfolio Amandine Maury</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Accueil</a></li>
+      <li><a href="about.html">À propos de moi</a></li>
+      <li><a href="projets.html" class="active">Projets</a></li>
+        <li><a href="contact.html">Contacts</a></li>
+    </ul>
+  </nav>
+
+  <header class="page-header">
+    <div class="page-eyebrow">Travaux sélectionnés</div>
+    <h1>Des projets conçus<br />avec <em>soin &amp; précision</em></h1>
+  </header>
+
+  <div class="filters">
+    <button class="filter-btn active" onclick="filterProjects('all', this)">Tous</button>
+    <button class="filter-btn" onclick="filterProjects('web', this)">Web App</button>
+    <button class="filter-btn" onclick="filterProjects('api', this)">API / Backend</button>
+    <button class="filter-btn" onclick="filterProjects('design', this)">UI / Design</button>
+  </div>
+
+  <section class="projects">
+
+    <!-- Projet mis en avant -->
+    <div class="project-featured" data-cat="web">
+      <div class="featured-visual">
+        <div class="featured-mockup">
+          <div class="mockup-bar">
+            <div class="mockup-dot"></div>
+            <div class="mockup-dot"></div>
+            <div class="mockup-dot"></div>
+          </div>
+          <div class="mockup-content">
+            <div class="mockup-line accent"></div>
+            <div class="mockup-line"></div>
+            <div class="mockup-line short"></div>
+            <div style="height:16px"></div>
+            <div class="mockup-line"></div>
+            <div class="mockup-line"></div>
+          </div>
+        </div>
+      </div>
+      <div class="featured-info">
+        <div>
+          <div class="featured-badge">Projet phare</div>
+          <div class="featured-title">Plateforme SaaS analytique</div>
+          <p class="featured-desc">
+            Tableau de bord en temps réel permettant à des équipes marketing de visualiser leurs KPIs, segmenter leurs audiences et exporter des rapports personnalisés. Conçu pour traiter des millions d'événements par jour.
+          </p>
+        </div>
+        <div class="featured-footer">
+          <div class="featured-stack">
+            <span>React</span>
+            <span>Node.js</span>
+            <span>D3.js</span>
+            <span>Redis</span>
+          </div>
+          <a href="#" class="featured-link">Voir le projet ↗</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Projets en liste -->
+    <a href="#" class="project-row" data-cat="web">
+      <div class="project-num">02</div>
+      <div class="project-content">
+        <div class="project-title">Application e-commerce</div>
+        <p class="project-desc">Boutique en ligne complète avec panier, paiement Stripe, espace client et interface d'administration pour la gestion des stocks.</p>
+        <div class="project-tags">
+          <span class="project-tag">Next.js</span>
+          <span class="project-tag">Stripe</span>
+          <span class="project-tag">Prisma</span>
+          <span class="project-tag">PostgreSQL</span>
+        </div>
+      </div>
+      <div class="project-arrow">↗</div>
+    </a>
+
+    <a href="#" class="project-row" data-cat="api">
+      <div class="project-num">03</div>
+      <div class="project-content">
+        <div class="project-title">API REST micro-services</div>
+        <p class="project-desc">Architecture micro-services avec authentification JWT, rate-limiting, documentation Swagger et pipeline CI/CD complet sur AWS.</p>
+        <div class="project-tags">
+          <span class="project-tag">Node.js</span>
+          <span class="project-tag">Docker</span>
+          <span class="project-tag">AWS</span>
+          <span class="project-tag">GraphQL</span>
+          <span class="project-tag featured">Open source</span>
+        </div>
+      </div>
+      <div class="project-arrow">↗</div>
+    </a>
+
+    <a href="#" class="project-row" data-cat="design">
+      <div class="project-num">04</div>
+      <div class="project-content">
+        <div class="project-title">Design system &amp; composants</div>
+        <p class="project-desc">Bibliothèque de composants React réutilisables avec tokens de design, documentation Storybook et tests d'accessibilité automatisés.</p>
+        <div class="project-tags">
+          <span class="project-tag">React</span>
+          <span class="project-tag">Storybook</span>
+          <span class="project-tag">TypeScript</span>
+          <span class="project-tag">WCAG 2.1</span>
+        </div>
+      </div>
+      <div class="project-arrow">↗</div>
+    </a>
+
+    <a href="#" class="project-row" data-cat="web">
+      <div class="project-num">05</div>
+      <div class="project-content">
+        <div class="project-title">Application mobile PWA</div>
+        <p class="project-desc">Progressive Web App pour la gestion de projets en équipe, avec mode hors-ligne, notifications push et synchronisation en temps réel.</p>
+        <div class="project-tags">
+          <span class="project-tag">React</span>
+          <span class="project-tag">Service Worker</span>
+          <span class="project-tag">WebSockets</span>
+          <span class="project-tag">IndexedDB</span>
+        </div>
+      </div>
+      <div class="project-arrow">↗</div>
+    </a>
+
+  </section>
+
+  <footer>
+    <span class="footer-copy">Portfolio - Amandine Maury</span>
+    
+  </footer>
+
+  <script>
+    function filterProjects(cat, btn) {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('[data-cat]').forEach(el => {
+        el.style.display = (cat === 'all' || el.dataset.cat === cat) ? '' : 'none';
+      });
+    }
+  </script>
+
+</body>
+</html>
