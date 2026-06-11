@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Projets — Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #f5f0e8;
+      --fg: #1a2744;
+      --fg-muted: #5a6a8a;
+      --accent: #ffa62b;
+      --accent-dim: rgba(255,166,43,0.12);
+      --border: rgba(26,39,68,0.10);
+      --serif: 'Cormorant Garamond', Georgia, serif;
+      --mono: 'DM Mono', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--serif);
+      font-weight: 300;
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 100;
+      opacity: 0.15;
+    }
+
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.5rem 4rem;
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+      background: rgba(245,240,232,0.88);
+    }
+
+    .nav-logo {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      color: var(--fg-muted);
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover { color: var(--fg); }
+    .nav-links a.active { color: var(--accent); }
+
+    /* Page header */
+    .page-header {
+      padding: 10rem 4rem 4rem;
+      border-bottom: 1px solid var(--border);
+      animation: fadeUp 0.8s ease both;
+    }
+
+    .page-eyebrow {
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .page-eyebrow::before {
+      content: '';
+      width: 32px;
+      height: 1px;
+      background: var(--accent);
+    }
+
+    h1 {
+      font-size: clamp(3rem, 5vw, 5rem);
+      font-weight: 300;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      max-width: 700px;
+    }
+
+    h1 em { font-style: italic; color: var(--accent); }
+
+    /* Filter tabs */
+    .filters {
+      display: flex;
+      gap: 0;
+      padding: 0 4rem;
+      border-bottom: 1px solid var(--border);
+      animation: fadeUp 0.8s 0.1s ease both;
+    }
+
+    .filter-btn {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--fg-muted);
+      background: none;
+      border: none;
+      padding: 1.2rem 1.5rem;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: color 0.3s, border-color 0.3s;
+    }
+
+    .filter-btn:hover { color: var(--fg); }
+    .filter-btn.active { color: var(--accent); border-color: var(--accent); }
+
+    /* Projects list */
+    .projects {
+      padding: 0 4rem 4rem;
+      animation: fadeUp 0.8s 0.2s ease both;
+    }
+
+    /* ── Carte projet ── */
+    .project-card {
+      border-bottom: 1px solid var(--border);
+      padding: 3rem 0;
+    }
+
+    .project-card-inner {
+      display: grid;
+      grid-template-columns: 80px 1fr auto;
+      align-items: start;
+      gap: 2rem;
+    }
+
+    .project-num {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--fg-muted);
+      letter-spacing: 0.1em;
+      padding-top: 0.3rem;
+    }
+
+    .project-content { display: flex; flex-direction: column; gap: 0.75rem; }
+
+    .project-title {
+      font-size: 1.8rem;
+      font-weight: 300;
+      line-height: 1.2;
+    }
+
+    .project-desc {
+      color: var(--fg-muted);
+      font-size: 1rem;
+      max-width: 620px;
+      line-height: 1.8;
+    }
+
+    /* Descriptif détaillé — masqué par défaut */
+    .project-details {
+      display: none;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 0.5rem;
+      padding: 1.5rem;
+      border-left: 2px solid var(--accent);
+      background: rgba(255,166,43,0.04);
+    }
+
+    .project-details.open { display: flex; }
+
+    .project-detail-title {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.25rem;
+    }
+
+    .project-detail-text {
+      font-size: 0.95rem;
+      color: var(--fg);
+      line-height: 1.8;
+    }
+
+    .project-tags {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .project-tag {
+      font-family: var(--mono);
+      font-size: 0.63rem;
+      letter-spacing: 0.08em;
+      border: 1px solid var(--border);
+      padding: 0.2rem 0.6rem;
+      color: var(--fg-muted);
+    }
+
+    .project-tag.featured { border-color: var(--accent); color: var(--accent); }
+
+    /* Actions : voir détails + télécharger */
+    .project-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-toggle {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--fg-muted);
+      background: none;
+      border: 1px solid var(--border);
+      padding: 0.45rem 1rem;
+      cursor: pointer;
+      transition: color 0.3s, border-color 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .btn-toggle:hover { color: var(--fg); border-color: rgba(26,39,68,0.3); }
+    .btn-toggle.open { color: var(--accent); border-color: var(--accent); }
+
+    .btn-download {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--bg);
+      background: var(--fg);
+      border: none;
+      padding: 0.45rem 1rem;
+      cursor: pointer;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: background 0.3s;
+    }
+
+    .btn-download:hover { background: var(--accent); }
+
+    .btn-download-empty {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--fg-muted);
+      border: 1px dashed var(--border);
+      padding: 0.45rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      opacity: 0.6;
+      cursor: default;
+    }
+
+    /* Projet mis en avant */
+    .project-featured {
+      margin: 3rem 0 0;
+      border: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 360px;
+    }
+
+    .featured-visual {
+      background: var(--accent-dim);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-right: 1px solid var(--border);
+      padding: 3rem;
+    }
+
+    .featured-mockup {
+      width: 100%;
+      max-width: 260px;
+      aspect-ratio: 16/10;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .mockup-bar {
+      height: 22px;
+      background: rgba(26,39,68,0.04);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 0 8px;
+    }
+
+    .mockup-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border); }
+
+    .mockup-content {
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .mockup-line {
+      height: 6px;
+      border-radius: 2px;
+      background: rgba(26,39,68,0.08);
+    }
+
+    .mockup-line.accent { background: rgba(255,166,43,0.4); width: 60%; }
+    .mockup-line.short { width: 40%; }
+
+    .featured-info {
+      padding: 3rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .featured-badge {
+      font-family: var(--mono);
+      font-size: 0.63rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      padding: 0.2rem 0.6rem;
+      display: inline-block;
+      margin-bottom: 1.5rem;
+      align-self: flex-start;
+    }
+
+    .featured-title {
+      font-size: 2rem;
+      font-weight: 300;
+      line-height: 1.15;
+      margin-bottom: 0.75rem;
+    }
+
+    .featured-desc {
+      color: var(--fg-muted);
+      line-height: 1.8;
+      font-size: 0.95rem;
+    }
+
+    .featured-details {
+      margin-top: 1rem;
+      display: none;
+      flex-direction: column;
+      gap: 0.75rem;
+      padding: 1.2rem;
+      border-left: 2px solid var(--accent);
+      background: rgba(255,166,43,0.04);
+      font-size: 0.95rem;
+      color: var(--fg);
+      line-height: 1.8;
+    }
+
+    .featured-details.open { display: flex; }
+
+    .featured-footer {
+      margin-top: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .featured-stack {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .featured-stack span {
+      font-family: var(--mono);
+      font-size: 0.65rem;
+      color: var(--accent);
+    }
+
+    .featured-actions {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 4rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-copy {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      color: var(--fg-muted);
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 768px) {
+      nav { padding: 1.2rem 1.5rem; }
+      .nav-links { gap: 1.5rem; }
+      .page-header { padding: 7rem 1.5rem 3rem; }
+      .filters { padding: 0 1.5rem; }
+      .projects { padding: 0 1.5rem 3rem; }
+      .project-card-inner { grid-template-columns: 50px 1fr; }
+      .project-featured { grid-template-columns: 1fr; }
+      .featured-visual { display: none; }
+      footer { padding: 1.5rem; flex-direction: column; gap: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="nav-logo">// Portfolio Amandine Maury</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Accueil</a></li>
+      <li><a href="about.html">À propos de moi</a></li>
+      <li><a href="projets.html" class="active">Projets</a></li>
+      <li><a href="bilan.html">Bilan universitaire</a></li>
+      <li><a href="contact.html">Contacts</a></li>
+    </ul>
+  </nav>
+
+  <header class="page-header">
+    <div class="page-eyebrow">Projets universitaires</div>
+    <h1>Travaux réalisés<br />avec <em>méthode &amp; rigueur</em></h1>
+  </header>
+
+  <div class="filters">
+    <button class="filter-btn active" onclick="filterProjects('all', this)">Tous</button>
+    <button class="filter-btn" onclick="filterProjects('langue', this)">Langues</button>
+    <button class="filter-btn" onclick="filterProjects('reporting', this)">Reporting</button>
+    <button class="filter-btn" onclick="filterProjects('stats', this)">Statistiques</button>
+    <button class="filter-btn" onclick="filterProjects('bdd', this)">Base de données</button>
+    <button class="filter-btn" onclick="filterProjects('dataviz', this)">DataVisualisation</button>
+    <button class="filter-btn" onclick="filterProjects('finale', this)">Projet phare</button>
+  </div>
+
+  <section class="projects">
+
+    <!-- ── PROJET 01 ── -->
+    <div class="project-card" data-cat="langue">
+      <div class="project-card-inner">
+        <div class="project-num">01</div>
+        <div class="project-content">
+          <div class="project-title">Présentation en anglais d'un territoire économique et culturel</div>
+          <p class="project-desc">Présentation orale en anglais d'un territoire choisi sous ses aspects économiques et culturels. Travail de recherche documentaire, structuration du discours et communication en langue étrangère.</p>
+          <div class="project-details" id="details-01">
+            <div>
+              <div class="project-detail-title">Contexte</div>
+              <div class="project-detail-text">Projet réalisé dans le cadre du BUT Science des données, visant à développer les compétences en communication professionnelle en anglais autour d'un territoire donné. Le diaporama de la présentation est disponible en le téléchargeant ci-dessous.</div>
+            </div>
+            <div>
+              <div class="project-detail-title">Compétences mobilisées</div>
+              <div class="project-detail-text">Recherche documentaire, synthèse d'informations économiques et culturelles, expression orale en anglais, conception de supports visuels.</div>
+            </div>
+          </div>
+          <div class="project-tags">
+            <span class="project-tag">Anglais</span>
+            <span class="project-tag">Présentation orale</span>
+            <span class="project-tag">Recherche documentaire</span>
+          </div>
+          <div class="project-actions">
+            <button class="btn-toggle" onclick="toggleDetails('details-01', this)"><span>▸</span> Voir le descriptif</button>
+            <a href="sae territoire.pdf" download class="btn-download">↓ Diaporama à télécharger</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PROJET 02 ── -->
+    <div class="project-card" data-cat="reporting">
+      <div class="project-card-inner">
+        <div class="project-num">02</div>
+        <div class="project-content">
+          <div class="project-title">Création d'un reporting</div>
+          <p class="project-desc">Automatisation d'un outil de gestion des notes d'un éleve de première de BUT Science des données avec Excel et VBA. Mise en place d'un tableau de bord dynamique pour un suivi des notes. </p>
+          <div class="project-details" id="details-02">
+            <div>
+              <div class="project-detail-title">Contexte</div>
+              <div class="project-detail-text">L'objectif était d'automatiser une chaîne de traitement de données pour faciliter le suivi des notes, savoir la decision du jury pour une validation de l'année universitaire et une représentation des moyennes de notes par matières. Nous devons saisir les notes à la main, et pouvons les modifier, les supprimer...</div>
+            </div>
+            <div>
+              <div class="project-detail-title">Compétences mobilisées</div>
+              <div class="project-detail-text">
+                Automatisation VBA, structuration de données Excel, création de graphiques dynamiques.</div>
+            </div>
+          </div>
+          <div class="project-tags">
+            <span class="project-tag">Excel</span>
+            <span class="project-tag">VBA</span>
+            <span class="project-tag">Gestion de données</span>
+          </div>
+          <div class="project-actions">
+            <button class="btn-toggle" onclick="toggleDetails('details-02', this)"><span>▸</span> Voir le descriptif</button>
+            <a href="sae tableur et reporting amandine alban.xlsm" download class="btn-download">↓ Outil complet à télécharger</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PROJET 03 ── -->
+    <div class="project-card" data-cat="stats">
+      <div class="project-card-inner">
+        <div class="project-num">03</div>
+        <div class="project-content">
+          <div class="project-title">Préparation et synthèse d'un tableau de données en vue d'une analyse exploratoire simple</div>
+          <p class="project-desc">Analyse des réponses de répondants sur une enquête menée au sein des étudiants sur l'usage des téléphones, conception de graphiques et rédaction d'un rapport d'analyse exploratoire.</p>
+          <div class="project-details" id="details-03">
+            <div>
+              <div class="project-detail-title">Contexte</div>
+              <div class="project-detail-text">Traitement de données issu d'une enquête sur le logiciel Sphinx. L'objectif était de structurer et analyser les réponses pour en extraire des tendances significatives.</div>
+            </div>
+            <div>
+              <div class="project-detail-title">Compétences mobilisées</div>
+              <div class="project-detail-text">Statistiques descriptives, création de graphiques en fonction des variables, rédaction d'un rapport d'analyse.</div>
+            </div>
+          </div>
+          <div class="project-tags">
+            <span class="project-tag">Statistiques</span>
+            <span class="project-tag">Sphinx</span>
+            <span class="project-tag">Graphiques</span>
+            <span class="project-tag">Rapport</span>
+          </div>
+          <div class="project-actions">
+            <button class="btn-toggle" onclick="toggleDetails('details-03', this)"><span>▸</span> Voir le descriptif</button>
+            <a href="SAE enquete SUR TELEPHONE (1).pdf" download class="btn-download">↓ Rapport d'analyse à télécharger</a>
+            <a href="maquette (1).pdf" download class="btn-download">↓ Maquette à télécharger</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PROJET 04 ── -->
+    <div class="project-card" data-cat="bdd">
+      <div class="project-card-inner">
+        <div class="project-num">04</div>
+        <div class="project-content">
+          <div class="project-title">Conception et implantation d'une base de données</div>
+          <p class="project-desc">Modélisation, conception et implantation d'une base de données relationnelle à partir d'un cahier des charges. Requêtes SQL et tests de cohérence des données, interface TKinter.</p>
+          <div class="project-details" id="details-04">
+            <div>
+              <div class="project-detail-title">Contexte</div>
+              <div class="project-detail-text">Projet de gestion de données structurées nécessitant la modélisation d'un schéma entité-relation, puis son implémentation dans un système de gestion de base de données. Aussi, un interfce TKinter à été créer pour rendre l'outil simple d'utilisation.</div>
+            </div>
+            <div>
+              <div class="project-detail-title">Compétences mobilisées</div>
+              <div class="project-detail-text">Modélisation entité-association, schéma relationnel, langage SQL (CREATE, INSERT, SELECT, jointures), vérification de l'intégrité des données.</div>
+            </div>
+          </div>
+          <div class="project-tags">
+            <span class="project-tag">SQL</span>
+            <span class="project-tag">Base de données</span>
+            <span class="project-tag">Modélisation</span>
+            <span class="project-tag">TKinter</span>
+            <span class="project-tag">Python</span>
+          </div>
+          <div class="project-actions">
+            <button class="btn-toggle" onclick="toggleDetails('details-04', this)"><span>▸</span> Voir le descriptif</button>
+            <a href="https://youtu.be/-BXnRQAtLKg" download class="btn-download">↓ Lien video tuto</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PROJET 05 ── -->
+    <div class="project-card" data-cat="stats">
+      <div class="project-card-inner">
+        <div class="project-num">05</div>
+        <div class="project-content">
+          <div class="project-title">Construction et présentation d'indicateurs de performance</div>
+          <p class="project-desc">Calcul et analyse d'indicateurs clés de performance (KPI) dans un contexte métier. Réalisation d'un tableau de bord et présentation écrite des résultats sous forme d'un rapport.</p>
+          <div class="project-details" id="details-05">
+            <div>
+              <div class="project-detail-title">Contexte</div>
+              <div class="project-detail-text">Il s'agissait de définir, calculer et interpréter des KPI pertinents pour l'entreprise Fleury Michon, puis de les restituer sous forme de tableau de bord clair et lisible.</div>
+            </div>
+            <div>
+              <div class="project-detail-title">Compétences mobilisées</div>
+              <div class="project-detail-text">Définition d'indicateurs métier, calcul avec Excel, conception d'un tableau de bord visuel, présentation orale et recommandations stratégiques.</div>
+            </div>
+          </div>
+          <div class="project-tags">
+            <span class="project-tag">KPI</span>
+            <span class="project-tag">Tableau de bord</span>
+            <span class="project-tag">Excel</span>
+          </div>
+          <div class="project-actions">
+            <button class="btn-toggle" onclick="toggleDetails('details-05', this)"><span>▸</span> Voir le descriptif</button>
+            <a href="Tableau blanc rapport de performance entreprise moderne bleu (1).png" download class="btn-download">↓ Tableau de bord à Télécharger</a>
+            <a href="fleury michon presentation-rapport.pdf" download class="btn-download">↓ Rapportà Télécharger</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PROJET 06 ── -->
+    <div class="project-card" data-cat="dataviz">
+      <div class="project-card-inner">
+        <div class="project-num">06</div>
+        <div class="project-content">
+          <div class="project-title">DataViz — Concours</div>
+          <p class="project-desc">Participation à un concours de visualisation de données. Conception d'une représentation visuelle originale, claire et percutante à partir d'un jeu de données imposé par l'INSEE.</p>
+          <div class="project-details" id="details-06">
+            <div>
+              <div class="project-detail-title">Contexte</div>
+              <div class="project-detail-text">Concours de dataviz organisé dans le cadre du BUT Science des données. L'enjeu était de produire une visualisation à la fois esthétique, lisible et informative dans un délai contraint. Comme jeu de données, nous avons eu la démographie des communes françaises.</div>
+            </div>
+            <div>
+              <div class="project-detail-title">Compétences mobilisées</div>
+              <div class="project-detail-text">Choix du type de visualisation adapté aux données, sens du design graphique, utilisation d'outils de dataviz (Power BI, Excel).</div>
+            </div>
+          </div>
+          <div class="project-tags">
+            <span class="project-tag">DataViz</span>
+            <span class="project-tag">Power BI</span>
+            <span class="project-tag">Concours</span>
+            <span class="project-tag featured">Compétition</span>
+          </div>
+          <div class="project-actions">
+            <button class="btn-toggle" onclick="toggleDetails('details-06', this)"><span>▸</span> Voir le descriptif</button>
+            <a href="JulieA_SimonO_YasmineE_AmandineM_LounaB.pdf" download class="btn-download">↓ infographie à Télécharger</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PROJET 07 ── -->
+    <div class="project-card" data-cat="finale">
+      <div class="project-card-inner">
+        <div class="project-num">07</div>
+        <div class="project-content">
+          <div class="project-title">Analyse de données, reporting et datavisualisation</div>
+          <p class="project-desc">Projet complet couvrant l'ensemble de la chaîne de traitement de la donnée : collecte, nettoyage, analyse, reporting automatisé et restitution visuelle des résultats.</p>
+          <div class="project-details" id="details-07">
+            <div>
+              <div class="project-detail-title">Contexte</div>
+              <div class="project-detail-text">Projet intégrateur mobilisant l'ensemble des compétences acquises en BUT Science des données : de l'acquisition des données jusqu'à leur restitution sous forme de visualisations et de rapports. Nous avons eu une demande externe par le Laboratoire Qualyse. L'objectif était de leur proposer un outil simple d'utilisation dans lequel il peut importer des fichiers Excel, rendre lisible et compréhensible la gestion des données et montrer les tendances générales.</div>
+            </div>
+            <div>
+              <div class="project-detail-title">Compétences mobilisées</div>
+              <div class="project-detail-text">Analyse statistique, VBA, création de graphiques dynamiques, mise en page d'un rapport de données, storytelling visuel et présentation synthétique des résultats. Présentation orale en anglais de notre outil.</div>
+            </div>
+          </div>
+          <div class="project-tags">
+            <span class="project-tag">Analyse</span>
+            <span class="project-tag">Reporting</span>
+            <span class="project-tag">VBA</span>
+            <span class="project-tag">Excel</span>
+            <span class="project-tag">Anglais</span>
+            <span class="project-tag featured">Projet phare</span>
+          </div>
+          <div class="project-actions">
+            <button class="btn-toggle" onclick="toggleDetails('details-07', this)"><span>▸</span> Voir le descriptif</button>
+            <a href="Laboratoire Qualyse.xlsm" download class="btn-download">↓ Outil Excel à Télécharger</a>
+            <a href="Tableau de bord.pbix" download class="btn-download">↓ Tableau de bord dynamique à Télécharger</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <footer>
+    <span class="footer-copy">Portfolio — Amandine Maury</span>
+  </footer>
+
+  <script>
+    // Filtre par catégorie
+    function filterProjects(cat, btn) {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('[data-cat]').forEach(el => {
+        el.style.display = (cat === 'all' || el.dataset.cat === cat) ? '' : 'none';
+      });
+    }
+
+    // Ouvre/ferme le descriptif
+    function toggleDetails(id, btn) {
+      const panel = document.getElementById(id);
+      const isOpen = panel.classList.toggle('open');
+      btn.classList.toggle('open', isOpen);
+      const arrow = btn.querySelector('span');
+      if (arrow) arrow.textContent = isOpen ? '▾' : '▸';
+      btn.childNodes[1].textContent = isOpen ? ' Masquer' : ' Voir le descriptif';
+      // Pour le bouton "Détails" du projet phare
+      if (btn.childNodes[1].textContent === ' Masquer' || btn.childNodes[1].textContent === ' Voir le descriptif') {
+        if (id === 'details-featured') {
+          btn.childNodes[1].textContent = isOpen ? ' Masquer' : ' Détails';
+        }
+      }
+    }
+  </script>
+
+</body>
+</html>
